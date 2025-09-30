@@ -5,3 +5,122 @@ body,
 :root {
 	height: 100%;
 }
+
+/* -------------------- */
+/* Custom theme variables */
+/* -------------------- */
+:root {
+	/* Font sizes */
+	--font-heading1-bold: 50px 700;
+	--font-heading2-bold: 30px 700;
+	--font-heading3-bold: 24px 700;
+	--font-heading4-bold: 20px 700;
+	--font-body-bold: 18px 700;
+	--font-body-semibold: 18px 600;
+	--font-body-medium: 18px 500;
+	--font-base-bold: 16px 600;
+	--font-base-medium: 16px 500;
+
+	/* Colors */
+	--color-white-1: #f8f8f8;
+	--color-grey-1: #616161;
+	--color-grey-2: #e5e7eb;
+	--color-blue-1: #005ebe;
+	--color-blue-2: #e9f5fe;
+	--color-blue-3: #f5f7f9;
+	--color-red-1: #ff0000;
+}
+
+/* -------------------- */
+/* Utilities using CSS variables */
+/* -------------------- */
+.bg-white-1 {
+	background-color: var(--color-white-1);
+}
+.bg-grey-1 {
+	background-color: var(--color-grey-1);
+}
+.bg-grey-2 {
+	background-color: var(--color-grey-2);
+}
+.bg-blue-1 {
+	background-color: var(--color-blue-1);
+}
+.bg-blue-2 {
+	background-color: var(--color-blue-2);
+}
+.bg-blue-3 {
+	background-color: var(--color-blue-3);
+}
+.bg-red-1 {
+	background-color: var(--color-red-1);
+}
+
+.text-white-1 {
+	color: var(--color-white-1);
+}
+.text-grey-1 {
+	color: var(--color-grey-1);
+}
+.text-grey-2 {
+	color: var(--color-grey-2);
+}
+.text-blue-1 {
+	color: var(--color-blue-1);
+}
+.text-blue-2 {
+	color: var(--color-blue-2);
+}
+.text-blue-3 {
+	color: var(--color-blue-3);
+}
+.text-red-1 {
+	color: var(--color-red-1);
+}
+
+/* Font sizes */
+.text-heading1-bold {
+	font-size: 50px;
+	font-weight: 700;
+	line-height: 100%;
+}
+.text-heading2-bold {
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 100%;
+}
+.text-heading3-bold {
+	font-size: 24px;
+	font-weight: 700;
+	line-height: 100%;
+}
+.text-heading4-bold {
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 100%;
+}
+.text-body-bold {
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 100%;
+}
+.text-body-semibold {
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 100%;
+}
+.text-body-medium {
+	font-size: 18px;
+	font-weight: 500;
+	line-height: 100%;
+}
+.text-base-bold {
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 100%;
+}
+.text-base-medium {
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 100%;
+}
