@@ -3,6 +3,28 @@ import { connectToDB } from "@/lib/mongoDB";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
+export const GET = async (
+	req: NextRequest,
+	{ params }: { params: { collectionId: string } }
+) => {
+	try {
+		await connectToDB();
+		const { collectionId } = params;
+		const collection = await Collection.findById(collectionId);
+
+		if (!collection) {
+			return new NextResponse(
+				JSON.stringify({ message: "Collection not found" }),
+				{ status: 404 }
+			);
+		}
+		return NextResponse.json(collection, { status: 200 });
+	} catch (error) {
+		console.log("[collectionId_GET]", error);
+		return new NextResponse("Internal server error", { status: 500 });
+	}
+};
+
 export const DELETE = async (
 	req: NextRequest,
 	{ params }: { params: { collectionId: string } }
