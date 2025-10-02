@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoDB";
 import Collection from "@/lib/models/Collection";
 
+// POST /api/collections
 export const POST = async (req: NextRequest) => {
 	try {
 		const { userId } = await auth();
@@ -41,3 +42,15 @@ export const POST = async (req: NextRequest) => {
 	}
 };
 
+// GET /api/collections
+export const GET = async (req: NextRequest) => {
+	try {
+		await connectToDB();
+
+		const collections = await Collection.find().sort({ createdAt: -1 }); // -1 = descending order
+		return NextResponse.json(collections, { status: 200 });
+	} catch (error) {
+		console.log("[collections_GET]", error);
+		return new NextResponse("Internal server error", { status: 500 });
+	}
+};
