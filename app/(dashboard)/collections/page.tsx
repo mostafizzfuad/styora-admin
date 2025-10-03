@@ -14,14 +14,14 @@ const CollectionsPage = () => {
 
 	const getCollections = async () => {
 		try {
-			const response = await fetch("/api/collections", {
+			const res = await fetch("/api/collections", {
 				method: "GET",
 			});
-			const data = await response.json();
+			const data = await res.json();
 			setCollections(data);
 			setLoading(false);
-		} catch (error) {
-			console.log("[collections_GET]", error);
+		} catch (err) {
+			console.log("[collections_GET]", err);
 		}
 	};
 

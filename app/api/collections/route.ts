@@ -36,8 +36,8 @@ export const POST = async (req: NextRequest) => {
 
 		await newCollection.save();
 		return NextResponse.json(newCollection, { status: 200 });
-	} catch (error) {
-		console.log("[collections_POST]", error);
+	} catch (err) {
+		console.log("[collections_POST]", err);
 		return new NextResponse("Internal server error", { status: 500 });
 	}
 };
@@ -49,8 +49,8 @@ export const GET = async (req: NextRequest) => {
 
 		const collections = await Collection.find().sort({ createdAt: -1 }); // -1 = descending order
 		return NextResponse.json(collections, { status: 200 });
-	} catch (error) {
-		console.log("[collections_GET]", error);
+	} catch (err) {
+		console.log("[collections_GET]", err);
 		return new NextResponse("Internal server error", { status: 500 });
 	}
 };
