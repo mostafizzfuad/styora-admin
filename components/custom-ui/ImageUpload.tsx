@@ -5,7 +5,7 @@ import { Plus, Trash } from "lucide-react";
 interface ImageUploadProps {
 	value: string[];
 	onChange: (value: string) => void;
-	onRemove: () => void;
+	onRemove: (value: string) => void;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -31,7 +31,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 						<Button
 							size="sm"
 							className="absolute top-2 right-2 bg-red-1 text-white"
-							onClick={onRemove}
+							onClick={() => onRemove(url)}
 						>
 							<Trash className="h-4 w-4" />
 						</Button>
@@ -46,7 +46,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 					return (
 						<Button
 							onClick={() => open()}
-							className="bg-grey-1 text-white w-sm"
+							className="bg-grey-1 text-white min-w-1/6"
 						>
 							<Plus /> Upload Image
 						</Button>
