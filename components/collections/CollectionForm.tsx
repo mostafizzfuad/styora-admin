@@ -32,7 +32,7 @@ interface CollectionFormProps {
 
 const CollectionForm: React.FC<CollectionFormProps> = ({ initialData }) => {
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -53,15 +53,11 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ initialData }) => {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			setLoading(true);
 			const url = initialData
 				? `/api/collections/${initialData._id}`
 				: "/api/collections";
 			const res = await fetch(url, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
 				body: JSON.stringify(values),
 			});
 			if (res.ok) {
@@ -87,7 +83,7 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ initialData }) => {
 			{initialData ? (
 				<div className="flex items-center justify-between">
 					<p className="text-heading2-bold">Edit Collection</p>
-					<Delete id={initialData._id} />
+					<Delete id={initialData._id} item="collection" />
 				</div>
 			) : (
 				<p className="text-heading2-bold">Create Collection</p>

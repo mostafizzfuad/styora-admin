@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { size, z } from "zod";
+import { z } from "zod";
 import { Separator } from "../ui/separator";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import Delete from "../custom-ui/Delete";
 import MultiText from "../custom-ui/MultiText";
 import MultiSelect from "../custom-ui/MultiSelect";
+import Loader from "../custom-ui/Loader";
 
 const formSchema = z.object({
 	title: z.string().min(3).max(20),
@@ -31,9 +32,11 @@ const formSchema = z.object({
 	tags: z.array(z.string()),
 	sizes: z.array(z.string()),
 	colors: z.array(z.string()),
-	price: z.coerce.number().min(0.1),
-	expense: z.coerce.number().min(0.1),
+	price: z.coerce.number().min(0.1, "Price must be at least 0.1"),
+	expense: z.coerce.number().min(0.1, "Expense must be at least 0.1"),
 });
+
+type ProductFormValues = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
 	initialData?: ProductType | null; // Make initialData optional
@@ -41,12 +44,11 @@ interface ProductFormProps {
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 	const router = useRouter();
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [collections, setCollections] = useState<CollectionType[]>([]);
 
 	const getCollections = async () => {
 		try {
-			setLoading(true);
 			const res = await fetch("/api/collections", {
 				method: "GET",
 			});
@@ -63,10 +65,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 		getCollections();
 	}, []);
 
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm<ProductFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData
-			? initialData
+			? {
+					...initialData,
+					collections: initialData.collections.map(
+						(collection: CollectionType) => collection._id
+					),
+			  }
 			: {
 					title: "",
 					description: "",
@@ -89,17 +96,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 		}
 	};
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+	const onSubmit = async (values: ProductFormValues) => {
 		try {
-			setLoading(true);
 			const url = initialData
 				? `/api/products/${initialData._id}`
 				: "/api/products";
 			const res = await fetch(url, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
 				body: JSON.stringify(values),
 			});
 			if (res.ok) {
@@ -118,12 +121,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 		}
 	};
 
-	return (
+	return loading ? (
+		<Loader />
+	) : (
 		<div className="p-10">
 			{initialData ? (
 				<div className="flex items-center justify-between">
 					<p className="text-heading2-bold">Edit Product</p>
-					<Delete id={initialData._id} />
+					<Delete id={initialData._id} item="product" />
 				</div>
 			) : (
 				<p className="text-heading2-bold">Create Product</p>
@@ -259,8 +264,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 									<FormLabel>Tags</FormLabel>
 									<FormControl>
 										<MultiText
-											placeholder="Tags"
 											value={field.value}
+											placeholder="Tags"
 											onChange={(tag) =>
 												field.onChange([
 													...field.value,
@@ -291,8 +296,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 										<FormControl>
 											<MultiSelect
 												placeholder="Collections"
-												collections={collections}
 												value={field.value}
+												collections={collections}
 												onChange={(_id) =>
 													field.onChange([
 														...field.value,
@@ -358,7 +363,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 											value={field.value}
 											onChange={(size) =>
 												field.onChange([
-													...field.value,
+													...(field.value || []),
 													size,
 												])
 											}

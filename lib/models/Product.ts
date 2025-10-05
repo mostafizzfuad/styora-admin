@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema(
 			{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" },
 		],
 		tags: [String],
-		size: [String],
+		sizes: [String],
 		colors: [String],
 		price: {
 			type: mongoose.Schema.Types.Decimal128,

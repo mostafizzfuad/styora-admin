@@ -19,7 +19,7 @@ export const POST = async (req: NextRequest) => {
 			category,
 			collections,
 			tags,
-			size,
+			sizes,
 			colors,
 			price,
 			expense,
@@ -43,12 +43,23 @@ export const POST = async (req: NextRequest) => {
 			category,
 			collections,
 			tags,
-			size,
+			sizes,
 			colors,
 			price,
 			expense,
 		});
 		await newProduct.save();
+
+		if (collections) {
+			for (const collectionId of collections) {
+				const collection = await Collection.findById(collectionId);
+				if (collection) {
+					collection.products.push(newProduct._id);
+					await collection.save();
+				}
+			}
+		}
+
 		return NextResponse.json(newProduct, { status: 200 });
 	} catch (err) {
 		console.log("[products_POST]", err);
