@@ -124,3 +124,42 @@ export const POST = async (
 		return new NextResponse("Internal server error", { status: 500 });
 	}
 };
+
+export const DELETE = async (
+	req: NextRequest,
+	{ params }: { params: { productId: string } }
+) => {
+	try {
+		const { userId } = await auth();
+		if (!userId) {
+			return new NextResponse("Unauthorized", { status: 401 });
+		}
+		await connectToDB();
+		const { productId } = await params;
+		const product = await Product.findById(productId);
+
+		if (!product) {
+			return new NextResponse(
+				JSON.stringify({ message: "Product not found" }),
+				{ status: 404 }
+			);
+		}
+
+		await Product.findByIdAndDelete(productId);
+
+		// update all collections to remove this product
+		await Promise.all(
+			product.collections.map((collectionId: string) =>
+				Collection.findByIdAndUpdate(collectionId, {
+					$pull: { products: product._id },
+				})
+			)
+		);
+		return new NextResponse("Product deleted successfully", {
+			status: 200,
+		});
+	} catch (err) {
+		console.log("[productId_DELETE]", err);
+		return new NextResponse("Internal server error", { status: 500 });
+	}
+};
