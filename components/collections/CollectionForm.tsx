@@ -19,11 +19,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Delete from "../custom-ui/Delete";
+import ImageUploadSingle from "../custom-ui/ImageUploadSingle";
 
 const formSchema = z.object({
 	title: z.string().min(3).max(20),
 	description: z.string().min(10).max(500).trim(),
-	image: z.string(),
+	image: z.string().min(1, "Image is required"),
 });
 
 interface CollectionFormProps {
@@ -67,10 +68,9 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ initialData }) => {
 						initialData ? "updated" : "created"
 					} successfully`
 				);
-				window.location.href = "/collections";
 				router.push("/collections");
 			} else {
-				console.log("Failed to create collection");
+				console.log(`Failed to ${initialData ? "update" : "create"} collection`);
 			}
 		} catch (err) {
 			console.log("[collections_POST]", err);
@@ -136,8 +136,8 @@ const CollectionForm: React.FC<CollectionFormProps> = ({ initialData }) => {
 							<FormItem>
 								<FormLabel>Image</FormLabel>
 								<FormControl>
-									<ImageUpload
-										value={field.value ? [field.value] : []}
+									<ImageUploadSingle
+										value={field.value}
 										onChange={(url) => field.onChange(url)}
 										onRemove={() => field.onChange("")}
 									/>
