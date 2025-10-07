@@ -1,10 +1,11 @@
 import { CldUploadWidget } from "next-cloudinary";
 import { Button } from "../ui/button";
 import { Plus, Trash } from "lucide-react";
+import { useRef } from "react";
 
 interface ImageUploadProps {
 	value: string[];
-	onChange: (value: string) => void;
+	onChange: (value: string[]) => void;
 	onRemove: (value: string) => void;
 }
 
@@ -13,8 +14,18 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 	onRemove,
 	value,
 }) => {
+	const bufferRef = useRef<string[]>([]);
+
 	const handleSuccess = (result: any) => {
-		onChange(result.info.secure_url);
+		const url = result?.info?.secure_url;
+		if (url) bufferRef.current.push(url);
+	};
+
+	const handleQueuesEnd = () => {
+		if (bufferRef.current.length) {
+			onChange([...(value || []), ...bufferRef.current]);
+			bufferRef.current = [];
+		}
 	};
 
 	return (
@@ -40,7 +51,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 			</div>
 			<CldUploadWidget
 				uploadPreset="styora-admin"
+				options={{
+					multiple: true,
+					maxFiles: 10,
+					resourceType: "image",
+				}}
 				onSuccess={handleSuccess}
+				onQueuesEnd={handleQueuesEnd}
 			>
 				{({ open }) => {
 					return (

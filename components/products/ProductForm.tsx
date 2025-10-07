@@ -66,7 +66,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 	}, []);
 
 	const form = useForm<ProductFormValues>({
-		resolver: zodResolver(formSchema),
+		resolver: zodResolver(formSchema) as any,
 		defaultValues: initialData
 			? {
 					...initialData,
@@ -183,18 +183,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 								<FormControl>
 									<ImageUpload
 										value={field.value}
-										onChange={(url) =>
-											field.onChange([
-												...field.value,
-												url,
-											])
+										onChange={(urls) =>
+											field.onChange(urls)
 										}
 										onRemove={(url) =>
-											field.onChange([
-												...field.value.filter(
-													(image) => image !== url
-												),
-											])
+											field.onChange(
+												field.value.filter(
+													(i) => i !== url
+												)
+											)
 										}
 									/>
 								</FormControl>
