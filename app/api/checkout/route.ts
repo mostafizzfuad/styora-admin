@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 		const { cartItems, customer } = await req.json();
 
 		if (!cartItems || !customer) {
-			return new NextResponse("Not anough data to checkout", {
+			return new NextResponse("Not enough data to checkout", {
 				status: 400,
 			});
 		}
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 			payment_method_types: ["card"],
 			mode: "payment",
 			shipping_address_collection: {
-				allowed_countries: ["US", "CA", "GB", "FR", "IN"],
+				allowed_countries: ["US", "BD", "IN"],
 			},
 			shipping_options: [
 				{ shipping_rate: "shr_1SGd0VJuElSVVnk1MsMqRPEd" }, // Free shipping
