@@ -5,13 +5,16 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
-	req: NextRequest,
+	_req: NextRequest,
 	{ params }: { params: { collectionId: string } }
 ) => {
 	try {
 		await connectToDB();
 		const { collectionId } = await params;
-		const collection = await Collection.findById(collectionId);
+		const collection = await Collection.findById(collectionId).populate({
+			path: "products",
+			model: Product,
+		});
 
 		if (!collection) {
 			return new NextResponse(
@@ -82,7 +85,7 @@ export const DELETE = async (
 		await Product.updateMany(
 			{ collections: collectionId },
 			{ $pull: { collections: collectionId } }
-		)
+		);
 
 		return new NextResponse("Collection deleted successfully", {
 			status: 200,
@@ -92,3 +95,5 @@ export const DELETE = async (
 		return new NextResponse("Internal server error", { status: 500 });
 	}
 };
+
+export const dynamic = "force-dynamic"; // avoid caching of the API response

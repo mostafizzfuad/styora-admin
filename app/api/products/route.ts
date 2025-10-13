@@ -3,6 +3,7 @@ import Product from "@/lib/models/Product";
 import { connectToDB } from "@/lib/mongoDB";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 
 // POST /api/products
 export const POST = async (req: NextRequest) => {
@@ -25,22 +26,32 @@ export const POST = async (req: NextRequest) => {
 			expense,
 		} = await req.json();
 
-		if (
-			!title ||
-			!description ||
-			!media ||
-			!category ||
-			!price ||
-			!expense
-		) {
-			return new NextResponse("Missing required fields", { status: 400 });
-		}
+		// server-side validation
+		// trim and check for empty strings
+		const t = String(title).trim();
+		const d = String(description).trim();
+		const c = String(category).trim();
+		if (!t || !d || !c)
+			return new NextResponse("Title/description/category is required", {
+				status: 400,
+			});
+
+		if (!Array.isArray(media) || media.length === 0)
+			return new NextResponse("At least one image is required", {
+				status: 400,
+			});
+
+		if (typeof price !== "number" || price <= 0)
+			return new NextResponse("Invalid price", { status: 400 });
+
+		if (typeof expense !== "number" || expense <= 0)
+			return new NextResponse("Invalid expense", { status: 400 });
 
 		const newProduct = await Product.create({
-			title,
-			description,
+			title: t,
+			description: d,
 			media,
-			category,
+			category: c,
 			collections,
 			tags,
 			sizes,
@@ -48,19 +59,21 @@ export const POST = async (req: NextRequest) => {
 			price,
 			expense,
 		});
-		await newProduct.save();
 
-		if (collections) {
-			for (const collectionId of collections) {
-				const collection = await Collection.findById(collectionId);
-				if (collection) {
-					collection.products.push(newProduct._id);
-					await collection.save();
-				}
+		if (Array.isArray(collections) && collections.length) {
+			const validIds = collections
+				.map((id: string) => id?.trim?.() ?? id)
+				.filter((id: string) => mongoose.Types.ObjectId.isValid(id));
+
+			if (validIds.length) {
+				await Collection.updateMany(
+					{ _id: { $in: validIds } },
+					{ $addToSet: { products: newProduct._id } } // addToSet = duplicate-safe
+				);
 			}
 		}
 
-		return NextResponse.json(newProduct, { status: 200 });
+		return NextResponse.json(newProduct, { status: 201 });
 	} catch (err) {
 		console.log("[products_POST]", err);
 		return new NextResponse("Internal Error", { status: 500 });
@@ -68,7 +81,7 @@ export const POST = async (req: NextRequest) => {
 };
 
 // GET /api/products
-export const GET = async (req: NextRequest) => {
+export const GET = async (_req: NextRequest) => {
 	try {
 		await connectToDB();
 		const products = await Product.find()
