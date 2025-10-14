@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
 	req: NextRequest,
-	{ params }: { params: { productId: string } }
+	{ params }: { params: Promise<{ productId: string }> }
 ) => {
 	try {
 		await connectToDB();
@@ -22,7 +22,14 @@ export const GET = async (
 				{ status: 404 }
 			);
 		}
-		return NextResponse.json(product, { status: 200 });
+		return new NextResponse(JSON.stringify(product), {
+			status: 200,
+			headers: {
+				"Access-Control-Allow-Origin": `${process.env.ECOMMERCE_STORE_URL}`,
+				"Access-Control-Allow-Methods": "GET",
+				"Access-Control-Allow-Headers": "Content-Type",
+			},
+		});
 	} catch (err) {
 		console.log("[productId_GET]", err);
 		return new NextResponse("Internal server error", { status: 500 });
