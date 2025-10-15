@@ -1,6 +1,19 @@
+// .eslintrc.json
 {
+	"extends": [
+		"next/core-web-vitals",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:prettier/recommended"
+	],
+	"plugins": ["@typescript-eslint", "prettier"],
 	"rules": {
 		"@typescript-eslint/no-explicit-any": "warn",
-		"@next/next/no-img-element": "warn"
+		"@next/next/no-img-element": "warn",
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto"
+			}
+		]
 	}
 }
