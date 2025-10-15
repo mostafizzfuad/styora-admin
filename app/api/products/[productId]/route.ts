@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
-	req: NextRequest,
+	_req: NextRequest,
 	{ params }: { params: Promise<{ productId: string }> }
 ) => {
 	try {
@@ -38,7 +38,7 @@ export const GET = async (
 
 export const POST = async (
 	req: NextRequest,
-	{ params }: { params: { productId: string } }
+	{ params }: { params: Promise<{ productId: string }> }
 ) => {
 	try {
 		const { userId } = await auth();
@@ -133,8 +133,8 @@ export const POST = async (
 };
 
 export const DELETE = async (
-	req: NextRequest,
-	{ params }: { params: { productId: string } }
+	_req: NextRequest,
+	{ params }: { params: Promise<{ productId: string }> }
 ) => {
 	try {
 		const { userId } = await auth();
@@ -170,3 +170,5 @@ export const DELETE = async (
 		return new NextResponse("Internal server error", { status: 500 });
 	}
 };
+
+export const dynamic = "force-dynamic";

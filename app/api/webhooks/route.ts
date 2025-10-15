@@ -3,10 +3,7 @@ import Stripe from "stripe";
 import { connectToDB } from "@/lib/mongoDB";
 import Order from "@/lib/models/Order";
 import Customer from "@/lib/models/Customer";
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-	typescript: true,
-});
+import { stripe } from "@/lib/stripe";
 
 export const POST = async (req: NextRequest) => {
 	try {

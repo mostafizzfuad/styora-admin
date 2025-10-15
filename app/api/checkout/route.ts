@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-	typescript: true,
-});
+import { stripe } from "@/lib/stripe";
 
 const corsHeaders = {
 	"Access-Control-Allow-Origin": "*",

@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
 	_req: NextRequest,
-	{ params }: { params: { collectionId: string } }
+	{ params }: { params: Promise<{ collectionId: string }> }
 ) => {
 	try {
 		await connectToDB();
@@ -31,7 +31,7 @@ export const GET = async (
 
 export const POST = async (
 	req: NextRequest,
-	{ params }: { params: { collectionId: string } }
+	{ params }: { params: Promise<{ collectionId: string }> }
 ) => {
 	try {
 		const { userId } = await auth();
@@ -40,7 +40,7 @@ export const POST = async (
 		}
 		await connectToDB();
 
-		const { collectionId } = params;
+		const { collectionId } = await params;
 		let collection = await Collection.findById(collectionId);
 		if (!collection) {
 			return new NextResponse("Collection not found", { status: 404 });
@@ -68,8 +68,8 @@ export const POST = async (
 };
 
 export const DELETE = async (
-	req: NextRequest,
-	{ params }: { params: { collectionId: string } }
+	_req: NextRequest,
+	{ params }: { params: Promise<{ collectionId: string }> }
 ) => {
 	try {
 		const { userId } = await auth();
@@ -79,7 +79,7 @@ export const DELETE = async (
 
 		await connectToDB();
 
-		const { collectionId } = params;
+		const { collectionId } = await params;
 		await Collection.findByIdAndDelete(collectionId);
 
 		await Product.updateMany(
@@ -96,4 +96,4 @@ export const DELETE = async (
 	}
 };
 
-export const dynamic = "force-dynamic"; // avoid caching of the API response
+export const dynamic = "force-dynamic";

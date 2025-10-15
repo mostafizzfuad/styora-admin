@@ -14,7 +14,7 @@ const CustomersPage = async () => {
 		.lean();
 
 	// shape data for CustomerType
-	const customers: CustomerType[] = docs.map((c: any) => ({
+	const customers: CustomerType[] = docs.map((c) => ({
 		clerkId: c.clerkId ?? "",
 		name: c.name ?? "",
 		email: c.email ?? "",

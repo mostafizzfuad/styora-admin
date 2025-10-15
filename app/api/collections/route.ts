@@ -43,7 +43,7 @@ export const POST = async (req: NextRequest) => {
 };
 
 // GET /api/collections
-export const GET = async (req: NextRequest) => {
+export const GET = async (_req: NextRequest) => {
 	try {
 		await connectToDB();
 
@@ -54,3 +54,5 @@ export const GET = async (req: NextRequest) => {
 		return new NextResponse("Internal server error", { status: 500 });
 	}
 };
+
+export const dynamic = "force-dynamic";
