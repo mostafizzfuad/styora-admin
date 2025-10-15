@@ -7,7 +7,9 @@ const OrderDetails = async ({
 	params: Promise<{ orderId: string }>;
 }) => {
 	const { orderId } = await params;
-	const res = await fetch(`http://localhost:3000/api/orders/${orderId}`);
+	const res = await fetch(
+		`${process.env.ADMIN_DASHBOARD_URL}/api/orders/${orderId}`
+	);
 	const { orderDetails, customer } = await res.json();
 	const {
 		street = "",
